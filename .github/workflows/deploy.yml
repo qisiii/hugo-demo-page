@@ -1,0 +1,40 @@
+name: GitHub Pages
+
+on:
+  push:
+    branches:
+      - master  # Set a branch to deploy
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true  # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '0.140.0'
+          # 是否启用 hugo extend
+          extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          PERSONAL_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          EXTERNAL_REPOSITORY: qisiii/hugo-demo-page  # 你的GitHub Pages仓库
+          PUBLISH_BRANCH: pages  # 选择另一个分支
+          PUBLISH_DIR: ./public
+          commit_message: ${{ github.event.head_commit.message }}
+          # cname: www.qisihub.cn
