@@ -32,8 +32,9 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/master' }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          PUBLISH_BRANCH: pages  # 选择另一个分支
+          PERSONAL_TOKEN: ${{ secrets.ACTION_TOKEN }}
+          EXTERNAL_REPOSITORY: qisiii/hugo-demo-page  # 你的GitHub Pages仓库
+          PUBLISH_BRANCH: pages  # 或者是你的GitHub Pages分支
           PUBLISH_DIR: ./public
           commit_message: ${{ github.event.head_commit.message }}
-          # cname: www.qisihub.cn
+          # cname: 
